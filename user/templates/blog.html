@@ -1,0 +1,84 @@
+{% extends "common/base.html" %}
+
+{% block post %}
+    <br/>
+    {% if blog %}
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label class="col-sm-3 control-label">头像</label>
+                <div class="col-sm-5">
+                    <img src="/media/{{ blog.icon }}" height="60px" width="60px">
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">昵称</label>
+                <div class="col-sm-5">
+                    <label class="form-control">{{ blog.nickname }}</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">生日</label>
+                <div class="col-sm-5">
+                    <label class="form-control">{{ blog.birthday }}</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">性别</label>
+                <div class="col-sm-5">
+                    <label class="form-control">{{ blog.sex }}</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">个人简介</label>
+                <div class="col-sm-5">
+                    <label class="form-control">{{ blog.signature }}</label>
+                </div>
+            </div>
+            <hr/>
+        </div>
+    {% endif %}
+
+    {% if posts %}
+        <div class="form-group">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-5">
+                <h4>{{ blog.nickname }}的</h4>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-5">
+                <h4>最新文章</h4>
+            </div>
+        </div>
+        {% for post in posts %}
+
+            <div class="form-group">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-5">
+                    <hr/>
+                    <a href="/post/read/?post_id={{ post.id }}">{{ post.title }}</a>
+                    <p>{{ post.created }}</p>
+                    <p><a href="/post/read/?post_id={{ post.id }}">{{ post.excerpt }}...</a></p>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="form-group">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-5">
+                <h4>{{ blog.nickname }}</h4>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-5">
+                <h4>什么文章也没写</h4>
+            </div>
+        </div>
+    {% endif %}
+
+{% endblock %}

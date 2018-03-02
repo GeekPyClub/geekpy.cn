@@ -1,0 +1,29 @@
+{% extends 'common/base.html' %}
+{% block usermsgs %}
+    {% if userinfo %}
+        {{ userinfo.nickname }}
+    {% endif %}
+{% endblock %}
+
+{% block index %}
+    {% for post in posts %}
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+                <hr/>
+            </div>
+            <div class="col-sm-1"></div>
+        </div>
+        <div class="row">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-10">
+                <h4><a href="/post/read/{{ post.id }}">{{ post.title }}</a></h4>
+                <p>作者: <a href="/blog/{{ post.auth.id }}">{{ post.auth.nickname }}</a></p>
+                <p>{{ post.created }}</p>
+                <p><a href="/post/read/{{ post.id }}">{{ post.excerpt }}...</a></p>
+            </div>
+            <div class="col-sm-1"></div>
+        </div>
+    {% endfor %}
+
+{% endblock %}

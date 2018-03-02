@@ -1,0 +1,66 @@
+{% extends "common/base.html" %}
+
+{% block post %}
+    <form class="form-horizontal" method="POST" action="/user/edit/" enctype=multipart/form-data>
+        {% csrf_token %}
+    <br/>
+        {% if userinfo %}
+            <div class="form-group">
+                <label class="col-sm-2 control-label">头像</label>
+                <div class="col-sm-5">
+                    <img src="/media/{{ userinfo.icon }}" height="60px" width="60px">
+                    <input class="form-control" type="file" name="icon">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">昵称</label>
+                <div class="col-sm-5">
+                    <input class="form-control" name="nickname" value="{{ userinfo.nickname }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">邮箱</label>
+                <div class="col-sm-5">
+                    <input class="form-control" name="email" value="{{ userinfo.email }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">生日</label>
+                <div class="col-sm-5">
+                    <input class="form-control" type="date" name="birthday" min="1911-01-01"
+                           value="{{ userinfo.birthday }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">性别</label>
+                <div class="col-sm-5">
+                    <select class="form-control" name="sex">
+                        {% for key, value in userinfo.sex.items %}
+                            <option value="{{ value.0 }}">{{ key }}</option>
+                            {% for key2, value2 in value.1.items %}
+                                <option value="{{ key2 }}">{{ value2 }}</option>
+                            {% endfor %}
+                        {% endfor %}
+
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">个人简介</label>
+                <div class="col-sm-5">
+                    <textarea class="form-control" name="signature">{{ userinfo.signature }}</textarea>
+                </div>
+            </div>
+
+
+            <input type="hidden" name="uid" value="{{ userinfo.uid }}">
+
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-5">
+                    <button type="submit" class="btn btn-default">提交</button>
+                </div>
+            </div>
+        {% endif %}
+    </form>
+
+{% endblock %}

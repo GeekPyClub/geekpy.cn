@@ -1,0 +1,22 @@
+{% extends 'common/base.html' %}
+
+{% block edit_tag %}
+    <li>
+        <a class="page-scroll" href="#">我的文章</a>
+    </li>
+{% endblock %}
+{% block post %}
+            <h1>{{ post.title }}</h1>
+            <p>作者: <a href="/blog/{{ post.auth.id }}">{{ post.auth.nickname }}</a></p>
+            <hr/>
+            {% if userinfo.id == post.authid %}
+                <a href="/post/edit/{{ post.id }}">编辑文章</a>
+            {% endif %}
+            <br/>
+            {% if post.modified > post.created %}
+                <p>修改时间 {{ post.modified }}</p>
+            {% else %}
+                <p>发表时间 {{ post.created }}</p>
+            {% endif %}
+            <p>{{ post.body | safe | escape | linebreaks }}</p>
+{% endblock %}

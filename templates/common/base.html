@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}GeekPy{% endblock %}</title>
+    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}">
+    <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    {% block ext_css %}{% endblock %}
+</head>
+
+<body>
+
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand page-scroll" href="/">
+                GeekPy - 极客派 -
+                <span class="navBarfont hidden-sm hidden-xs">您身边的&nbsp;Py技术</span>
+            </a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+
+                {% if userinfo %}
+                    <li>
+                        <a class="page-scroll" href="/user/info/">
+                            <img src="/media/{{ userinfo.icon }}" height="23px" width="23px">
+                            {{ userinfo.nickname }}
+                        </a>
+                    </li>
+
+                    <li>
+                        <a class="page-scroll" href="/">首页</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="/post/add/">发表</a>
+                    </li>
+                    {% block edit_tag %}
+                        <li>
+                            <a class="page-scroll" href="/user/info/">我的空间</a>
+                        </li>
+                    {% endblock %}
+                    <li>
+                        <a class="page-scroll" href="/user/logout/">退出</a>
+                    </li>
+                {% else %}
+                    <li>
+                        <a class="page-scroll" href="/">首页</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="/user/login/"><span class="navBarfont navBarcolor">登录</span></a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="/user/register/">注册</a>
+                    </li>
+                {% endif %}
+                {% block navbar %}{% endblock %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<br/>
+<br/><br/>
+<div class="row">
+    <hr/>
+    <div class="col-md-2"></div>
+    <div class="col-md-5">{% block warning %}
+        {% if warning_msgs %}
+            <div class="row">
+                <div class="col-sm-1"></div>
+                <div class="col-sm-6">
+                    <h3>{% block usermsgs %}{% endblock %}{{ warning_msgs }}</h3>
+                    <br/><hr/>
+                </div>
+                <div class="col-sm-4"></div>
+            </div>
+        {% endif %}
+    {% endblock %}</div>
+    <div class="col-md-5"></div>
+</div>
+
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-5">{% block index %}{% endblock %}</div>
+    <div class="col-md-5"></div>
+</div>
+
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-5">{% block post %}{% endblock %}</div>
+    <div class="col-md-5"></div>
+</div>
+<div class="row">
+    <br/>
+    <hr/>
+    <div class="col-md-3"></div>
+    <div class="col-md-6">
+        {% block page %}
+            {% if pages %}
+
+                <div class="btn-group" role="group" aria-label="...">
+                    {% if thePage != 1 %}
+                            <a href="/post/list/?page=1" class="btn btn-default"><<</a>
+                            <a href="/post/list/?page={{ thePage|add:-1 }}" class="btn btn-default">上一页</a>
+                    {% endif %}
+                    {% for page in pages %}
+                        {% if page == thePage %}
+                            <a style="color: red" href="#" class="btn btn-default">{{ thePage }}</a>
+                        {% else %}
+                            <a href="/post/list/?page={{ page }}" class="btn btn-default">{{ page }}</a>
+                        {% endif %}
+                    {% endfor %}
+                    {% if thePage != pageMax %}
+                            <a href="/post/list/?page={{ thePage|add:1 }}" class="btn btn-default">下一页</a>
+                            <a href="/post/list/?page={{ pageMax }}" class="btn btn-default">>></a>
+                    {% endif %}
+                </div>
+
+            {% endif %}
+        {% endblock %}</div>
+    <div class="col-md-3"></div>
+</div>
+
+<footer class="panel-footer bottom">
+    <br/>
+    <div class="bottom-footer container">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <p>2017-2018 - GeekPy - <a href="/">Py技术分享网站</a></p>
+                </div>
+                <div class="col-md-5"></div>
+                <div class="col-md-3">
+                    <ul class="list-inline">
+                        <li>GeekPy - 极客派 - <a href="/post/add/">悦在发言</a></li>
+                        <li> - <a href="/post/add/">乐在分享</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
+
+</body>
+
+<script type="application/javascript" src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+<script type="application/javascript" src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+{% block ext_js %}{% endblock %}
+
+</html>

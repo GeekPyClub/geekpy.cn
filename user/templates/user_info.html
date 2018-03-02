@@ -1,0 +1,70 @@
+{% extends "common/base.html" %}
+
+{% block edit_tag %}
+    <li>
+        <a class="page-scroll" href="/user/edit/">修改信息</a>
+    </li>
+{% endblock %}
+
+{% block post %}
+    <form class="form-horizontal">
+    <br/>
+        {% if userinfo %}
+            <div class="form-group">
+                <label class="col-sm-2 control-label">头像</label>
+                <div class="col-sm-5">
+                    <img src="/media/{{ userinfo.icon }}" height="60px" width="60px">
+                    <a href="/media/{{ userinfo.icon }}">查看高清头像</a>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">账号</label>
+                <div class="col-sm-5">
+                    <label class="form-control">{{ userinfo.username }}</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">昵称</label>
+                <div class="col-sm-5">
+                    <label class="form-control">{{ userinfo.nickname }}</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">注册时间</label>
+                <div class="col-sm-5">
+                    <label class="form-control">{{ userinfo.created }}</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">邮箱</label>
+                <div class="col-sm-5">
+                    <label class="form-control">{{ userinfo.email }}</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">生日</label>
+                <div class="col-sm-5">
+                    <label class="form-control">{{ userinfo.birthday }}</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">性别</label>
+                <div class="col-sm-5">
+                    <label class="form-control">{% for key in userinfo.sex %}{{ key }}{% endfor %}</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">个人简介</label>
+                <div class="col-sm-5">
+                    <label class="form-control">{{ userinfo.signature }}</label>
+                </div>
+            </div>
+
+        {% endif %}
+    </form>
+
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends 'common/base.html' %}
+
+{% block post %}
+    <form class="form-horizontal" method="POST" action="/post/edit/">
+        {% csrf_token %}
+        {% if post %}
+            <div class="form-group">
+                <label class="col-sm-2 control-label">标题</label>
+                <div class="col-sm-5">
+                    <input class="form-control" type="text" name="title" value="{{ post.title }}"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">内容</label>
+                <div class="col-sm-5">
+                    <textarea class="form-control" rows="20" name="body">{{ post.body }}</textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-5">
+                    <hr/>
+                </div>
+            </div>
+
+            <input type="hidden" name="post_id" value="{{ post.id }}">
+
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-5">
+                    <button type="submit" class="btn btn-default">提交</button>
+                </div>
+            </div>
+        {% endif %}
+    </form>
+{% endblock %}
