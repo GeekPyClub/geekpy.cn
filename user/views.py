@@ -230,11 +230,13 @@ def edit_info(request):
 def user_info(request, blog_pk=None):
     userinfo = request.session.get('userinfo')
 
+    # 显示公开的个人空间
     if blog_pk:
         blog = UsersInfo.objects.get(id=blog_pk)
         posts = Post.objects.filter(authid__exact=blog.id)[:10]
         return render(request, 'blog.html', {'posts': posts, 'blog': blog, 'userinfo': userinfo})
 
+    # 显示登陆后的个人空间
     if not userinfo:
         return redirect('/user/login/?warning=NoLogin')
 

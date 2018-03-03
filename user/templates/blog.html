@@ -60,9 +60,9 @@
                 <div class="col-sm-2"></div>
                 <div class="col-sm-5">
                     <hr/>
-                    <a href="/post/read/?post_id={{ post.id }}">{{ post.title }}</a>
+                    <a href="/post/read/{{ post.id }}">{{ post.title }}</a>
                     <p>{{ post.created }}</p>
-                    <p><a href="/post/read/?post_id={{ post.id }}">{{ post.excerpt }}...</a></p>
+                    <p><a href="/post/read/{{ post.id }}">{{ post.excerpt }}...</a></p>
                 </div>
             </div>
         {% endfor %}
