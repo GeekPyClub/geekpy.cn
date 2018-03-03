@@ -6,7 +6,6 @@ from post.models import Post
 from post.helper import paging
 from post.forms import createForm
 
-
 # 提示文章找不到，因为用得比较多，所以单独提取出来。
 not_find_warning = {'warning_msgs': '文章找不到'}
 
@@ -17,36 +16,39 @@ def post_read(request, post_pk=0):
     # 将session更新到 not_find_warning字典中, 生成上下文字典
     not_find_context = dict(not_find_warning, **{'userinfo': userinfo})
 
-    if post_pk:
-        try:
-            post = Post.objects.get(id=post_pk)
-            # 无处不在的{‘userinfo’: userinfo}, 是为了给前端传递用户数据
-            info_context = {'post': post, 'userinfo': userinfo}
-            return render(request, 'post.html', info_context)
-        except Post.DoesNotExist:
-            # 如果文章不存在，提示找不到
-            return render(request, 'post.html', not_find_context)
-    else:
+    if not post_pk:
+        return render(request, 'post.html', not_find_context)
+
+    try:
+        post = Post.objects.get(id=post_pk)
+        # 无处不在的{‘userinfo’: userinfo}, 是为了给前端传递用户数据
+        info_context = {'post': post, 'userinfo': userinfo}
+        return render(request, 'post.html', info_context)
+    except Post.DoesNotExist:
+        # 如果文章不存在，提示找不到
         return render(request, 'post.html', not_find_context)
 
 
-
-
-
 def post_list(request):
-
     msg = '欢迎光临'
     userinfo = request.session.get('userinfo')
-    getPage = int(request.GET.get('page', 1))
+    print(type(request.GET.get('page', 1)), request.GET.get('page', 1))
+    getPage = request.GET.get('page', 1)
+
+    # 有时候会取到一个空字符串，而不是默认值的 1
+    if not str(getPage).isdigit():
+        getPage = 1
+    else:
+        int(getPage)
     pageCount = 10
     pageShow = 4
     postMax = int(Post.objects.count())
     # 分页功能所需参数
     postBegin, postEnd, thePage, pageMax, pages = paging(thePage=getPage, pageShow=pageShow,
-                                                      pageCount=pageCount, postMax=postMax)
+                                                         pageCount=pageCount, postMax=postMax)
     posts = Post.objects.all()[postBegin: postEnd]
     context = {'posts': posts, 'pages': pages, 'pageMax': pageMax, 'thePage': thePage,
-               'warning_msgs': msg,'userinfo': userinfo}
+               'warning_msgs': msg, 'userinfo': userinfo}
     return render(request, 'index.html', context)
 
 
@@ -69,6 +71,7 @@ def post_add(request):
     form = createForm(request.POST)
     title = request.POST.get('title')
     body = request.POST.get('body')
+
     context = {'warning_msgs': '发表成功', 'userinfo': userinfo, 'form': form}
     if not title:
         msg = '请输入标题'
@@ -115,7 +118,6 @@ def post_edit(request, post_pk=0):
             return render(request, 'edit.html', context)
         except Post.DoesNotExist as e:
             return render(request, 'edit.html', not_find_context)
-
 
     # 正常编辑流程
     post_id = int(request.POST.get('post_id', 0))

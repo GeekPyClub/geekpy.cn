@@ -13,25 +13,61 @@ def paging(thePage=1, postMax=0, pageShow=2, pageCount=10):
             pageMax: 最大页数, pages: 包含了页码标签中要显示的动态页码, 一个能够被前端遍历的对象。
     '''
 
+    def thePages(pageMax=1, pageshowed=1, thePage=1):
+        if thePage < 1:
+            thePage = 1
+            pages = range(thePage, pageshowed + 1)
+        elif thePage > pageMax:
+            thePage = int(pageMax)
+            pages = range(thePage - pageshowed, thePage + 1)
+        else:
+            pages = range(thePage - (pageshowed / 2), thePage + (pageshowed / 2))
+        return pages, thePage
+
+
     if postMax < pageCount:
+        print(postMax, '最大文章数')
         postMax = pageCount
 
     pageMax = ceil(postMax / pageCount)
 
+    pageshowed = pageShow * 2
+    print(pageMax, '最大页')
+    if pageMax < 3:
+        if pageMax == 1:
+            pages = [1]
+        if pageMax == 2:
+            pages = [1, 2]
+
+    elif pageMax < pageshowed + 1:
+        if pageMax % 2 == 1:
+            pageshowed = pageMax - 1
+            pages, thePage = thePages(pageMax=pageMax, pageshowed=pageshowed, thePage=thePage)
+        else:
+            if pageMax < 5:
+                pageshowed = 2
+                pages, thePage = thePages(pageMax=pageMax, pageshowed=pageshowed, thePage=thePage)
+            else:
+                pageshowed = pageMax / 2
+                pages, thePage = thePages(pageMax=pageMax, pageshowed=pageshowed, thePage=thePage)
+
+        pass
+    else:
+        if thePage <= pageShow:
+            pages = range(1, pageCount)
+        elif thePage >= pageMax - pageShow:
+            pages = range(pageMax - pageshowed, pageMax + 1)
+        else:
+            pages, thePage = thePages(pageMax=pageMax, pageshowed=pageshowed, thePage=thePage)
+
+
+    if thePage > pageMax:
+        thePage = int(pageMax)
     if thePage < 1:
         thePage = 1
-        pages = range(1, pageShow * 2)
-    elif thePage > pageMax:
-        thePage = int(pageMax)
-        pages = range(pageMax - pageShow * 2, pageMax + 1)
-    elif thePage <= pageShow:
-        pages = range(1, pageCount)
-    elif thePage >= pageMax - pageShow:
-        pages = range(pageMax - pageShow * 2, pageMax + 1)
-    else:
-        pages = range(thePage - pageShow, thePage + pageShow)
 
     postBegin = (thePage - 1) * pageCount
     postEnd = thePage * pageCount
+    print(postBegin, postEnd, '开始结尾')
 
     return postBegin, postEnd, thePage, pageMax, pages

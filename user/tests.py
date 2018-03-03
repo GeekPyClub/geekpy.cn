@@ -5,10 +5,10 @@ import django
 from django.test import TestCase
 
 # Create your tests here.
-from post.models import Post
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "GeekPy.settings")
 django.setup()
+from post.models import Post
 from user.models import Users
 from user.models import UsersInfo
 from user.models import UsersSafety
