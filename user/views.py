@@ -234,7 +234,6 @@ def user_info(request, blog_pk=None):
     userinfo = request.session.get('userinfo')
     # 加工头像url
     userinfo = dispose_icon(userinfo=userinfo)
-    print(3)
     # 显示公开的个人空间
     if blog_pk:
         blog = UsersInfo.objects.get(id=blog_pk)
@@ -255,12 +254,10 @@ def dispose_icon(userinfo=None):
     :return: 返回加工后的对象
     '''
     if userinfo:
-        print(userinfo.icon,type(userinfo.icon), '1')
         # 如果是上传头像
         if str(userinfo.icon).startswith('upload'):
             userinfo.icon = "/media/%s" % (userinfo.icon)
         # 如果是默认头像
         if str(userinfo.icon).startswith('default'):
             userinfo.icon = "/static/%s" % (userinfo.icon)
-    print(userinfo.icon, type(userinfo.icon), '2')
     return userinfo
