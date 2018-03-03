@@ -32,7 +32,8 @@ def post_read(request, post_pk=0):
 def post_list(request):
     msg = '欢迎光临'
     userinfo = request.session.get('userinfo')
-    print(type(request.GET.get('page', 1)), request.GET.get('page', 1))
+
+    # print(type(request.GET.get('page', 1)), request.GET.get('page', 1))    # 测试用
     getPage = request.GET.get('page', 1)
 
     # 有时候会取到一个空字符串，而不是默认值的 1

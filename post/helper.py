@@ -26,13 +26,13 @@ def paging(thePage=1, postMax=0, pageShow=2, pageCount=10):
 
 
     if postMax < pageCount:
-        print(postMax, '最大文章数')
+        # print(postMax, '最大文章数')    # 测试用
         postMax = pageCount
 
     pageMax = ceil(postMax / pageCount)
 
     pageshowed = pageShow * 2
-    print(pageMax, '最大页')
+    # print(pageMax, '最大页')    # 测试用
     if pageMax < 3:
         if pageMax == 1:
             pages = [1]
@@ -68,6 +68,6 @@ def paging(thePage=1, postMax=0, pageShow=2, pageCount=10):
 
     postBegin = (thePage - 1) * pageCount
     postEnd = thePage * pageCount
-    print(postBegin, postEnd, '开始结尾')
+    # print(postBegin, postEnd, '开始结尾')    # 测试用
 
     return postBegin, postEnd, thePage, pageMax, pages
