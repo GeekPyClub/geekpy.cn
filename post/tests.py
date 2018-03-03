@@ -32,6 +32,6 @@ If the implementation is hard to explain, it's a bad idea.
 If the implementation is easy to explain, it may be a good idea.
 Namespaces are one honking great idea -- let's do more of those!'''
 
-for i in range(1, 10):
+for i in range(300, 3000):
     t = "%s-%d" % (title, i)
     Post.objects.create(title=t, body=post, uid=1, authid=1)

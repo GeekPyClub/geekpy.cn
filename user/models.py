@@ -36,7 +36,7 @@ class UsersInfo(models.Model):
     uid = models.IntegerField(verbose_name='用户id', unique=True, blank=False, null=False)
     nickname = models.CharField(max_length=64, unique=True, verbose_name='昵称', default=defaultname)
     icon = models.ImageField(upload_to='upload/icon/%Y/%m/%d',
-                             default='default/icon/0.jpg', verbose_name='头像')
+                             default='defaultMedia/icon/0.jpg', verbose_name='头像')
     birthday = models.CharField(max_length=16, verbose_name='生日', default=dateNow)
     sex = models.IntegerField(choices=((0, '保密'), (1, '男'), (2, '女')), default=0)
     signature = models.CharField(max_length=128, verbose_name='简介', default='这家伙什么也没写')

@@ -34,7 +34,7 @@ def login(request):
             msg = '暂未开启找回密码功能'
         else:
             msg = '欢迎登陆'
-        return render(request, 'login.html', {'warning_msgs': msg})
+        return render(request, 'user_login.html', {'warning_msgs': msg})
 
     username = request.POST.get('username')
     password = request.POST.get('password')
@@ -43,11 +43,11 @@ def login(request):
     try:
         user = Users.objects.get(username=username)
     except Users.DoesNotExist as e:
-        return render(request, 'login.html', {'warning_msgs': '用户不存在'})
+        return render(request, 'user_login.html', {'warning_msgs': '用户不存在'})
 
     # 密码是否正确
     if not user.checkout(password):
-        return render(request, 'login.html', {'warning_msgs': '密码不正确'})
+        return render(request, 'user_login.html', {'warning_msgs': '密码不正确'})
 
     # 用户信息是否存在
     try:
@@ -67,6 +67,7 @@ def login(request):
     userinfo.username = username
     userinfo.email = useremail
     userinfo.created = user.created
+    userinfo = dispose_icon(userinfo=userinfo)
     request.session['userinfo'] = userinfo
 
     # 是否激活(用来限制一些功能)
@@ -82,22 +83,23 @@ def logout(request):
 
 def register(request):
     userinfo = request.session.get('userinfo')
+    userinfo = dispose_icon(userinfo=userinfo)
     if userinfo:
         return redirect('/user/info/')
 
     if not request.method == 'POST':
         msg = '欢迎注册'
         form = RegisterForm()
-        return render(request, 'register.html', {'form': form, 'warning_msgs': msg})
+        return render(request, 'user_register.html', {'form': form, 'warning_msgs': msg})
 
     form = RegisterForm(request.POST)
     try:
         # 校验数据
         if not form.is_valid():
-            return render(request, 'register.html', {'warning_msgs': form.errors, 'form': form})
+            return render(request, 'user_register.html', {'warning_msgs': form.errors, 'form': form})
     except ValidationError as e:
         # 校验密码的自定义异常 'ValidationError'
-        return render(request, 'register.html', {'warning_msgs': e, 'form': form})
+        return render(request, 'user_register.html', {'warning_msgs': e, 'form': form})
 
     # 通过校验后开始注册逻辑
     username = form.cleaned_data.get('username')
@@ -106,7 +108,7 @@ def register(request):
     try:
         # 用户名唯一
         Users.objects.get(username=username)
-        return render(request, 'register.html', {'warning_msgs': '用户已存在', 'form': form})
+        return render(request, 'user_register.html', {'warning_msgs': '用户已存在', 'form': form})
     except Users.DoesNotExist as e:
         user = Users.objects.create(username=username, password=password)
         userinfo = UsersInfo.objects.create(uid=user.id)
@@ -137,11 +139,11 @@ def fill_info(request):
     if not request.method == 'POST':
         form = UserInfoForm()
         form.nickname = userinfo.nickname
-        return render(request, 'fill_info.html', {'form': form, 'userinfo': userinfo})
+        return render(request, 'user_fill.html', {'form': form, 'userinfo': userinfo})
 
     form = UserInfoForm(request.POST, request.FILES)
     if not form.is_valid():
-        return render(request, 'fill_info.html', {'form': form, 'warning_msgs': form.errors})
+        return render(request, 'user_fill.html', {'form': form, 'warning_msgs': form.errors})
 
     # 调用函数处理数据UserInfo
     return dispose_info(request=request, userinfo=userinfo, form=form)
@@ -171,8 +173,8 @@ def dispose_info(request=None, userinfo=None, form=None):
             safety = UsersSafety.objects.get(email=email)
             if not int(safety.uid) == int(userinfo.uid):
                 if not form:
-                    return render(request, 'edit_info.html', {'warning_msgs': '邮箱已被注册'})
-                return render(request, 'fill_info.html', {'form': form, 'warning_msgs': '邮箱已被注册'})
+                    return render(request, 'user_edit.html', {'warning_msgs': '邮箱已被注册'})
+                return render(request, 'user_fill.html', {'form': form, 'warning_msgs': '邮箱已被注册'})
 
         except UsersSafety.DoesNotExist as e:
             # 创建UsersSafety对象
@@ -185,8 +187,8 @@ def dispose_info(request=None, userinfo=None, form=None):
             uinfo = UsersInfo.objects.get(nickname=nickname)
             if not int(uinfo.uid) == int(userinfo.uid):
                 if not form:
-                    render(request, 'edit_info.html', {'form': form, 'warning_msgs': '昵称已被注册'})
-                return render(request, 'fill_info.html', {'form': form, 'warning_msgs': '昵称已被注册'})
+                    render(request, 'user_edit.html', {'form': form, 'warning_msgs': '昵称已被注册'})
+                return render(request, 'user_fill.html', {'form': form, 'warning_msgs': '昵称已被注册'})
         except UsersInfo.DoesNotExist as e:
             info.nickname = nickname
 
@@ -207,18 +209,19 @@ def dispose_info(request=None, userinfo=None, form=None):
     info.created = userinfo.created
     sexdict = myDeepCopy(sexDict)
     info.sex = {sexdict.pop(int(info.sex)): (int(info.sex), sexdict)}  # 修改性别显示
+
+    info = dispose_icon(userinfo=info)
     request.session['userinfo'] = info
     return redirect('/user/info/')
 
 
 def edit_info(request):
     userinfo = request.session.get('userinfo')
-
     if not userinfo :
         return redirect('/user/login/?warning=NoLogin')
 
     if not request.method == 'POST':
-        return render(request, 'edit_info.html', {'userinfo': userinfo})
+        return render(request, 'user_edit.html', {'userinfo': userinfo})
 
     uid = request.POST.get('uid')
     if not int(uid) == int(userinfo.uid):
@@ -229,15 +232,35 @@ def edit_info(request):
 
 def user_info(request, blog_pk=None):
     userinfo = request.session.get('userinfo')
-
+    # 加工头像url
+    userinfo = dispose_icon(userinfo=userinfo)
+    print(3)
     # 显示公开的个人空间
     if blog_pk:
         blog = UsersInfo.objects.get(id=blog_pk)
+        blog = dispose_icon(userinfo=blog)
         posts = Post.objects.filter(authid__exact=blog.id)[:10]
-        return render(request, 'blog.html', {'posts': posts, 'blog': blog, 'userinfo': userinfo})
+        return render(request, 'user_blog.html', {'posts': posts, 'blog': blog, 'userinfo': userinfo})
 
     # 显示登陆后的个人空间
     if not userinfo:
         return redirect('/user/login/?warning=NoLogin')
 
     return render(request, 'user_info.html', {'userinfo': userinfo})
+
+
+def dispose_icon(userinfo=None):
+    '''
+    :param userinfo: 一个 包含用户信息的 object
+    :return: 返回加工后的对象
+    '''
+    if userinfo:
+        print(userinfo.icon,type(userinfo.icon), '1')
+        # 如果是上传头像
+        if str(userinfo.icon).startswith('upload'):
+            userinfo.icon = "/media/%s" % (userinfo.icon)
+        # 如果是默认头像
+        if str(userinfo.icon).startswith('default'):
+            userinfo.icon = "/static/%s" % (userinfo.icon)
+    print(userinfo.icon, type(userinfo.icon), '2')
+    return userinfo

@@ -21,6 +21,10 @@ media/*
 .idea
 idea
 
+# tests
+tests.py
+test.py
+
 # Distribution / packaging
 .Python
 env/

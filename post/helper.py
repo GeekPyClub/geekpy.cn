@@ -12,7 +12,6 @@ def paging(thePage=1, postMax=0, pageShow=2, pageCount=10):
             thePage: 加工过的当前页，避免用户请求超出正常范围的页面,
             pageMax: 最大页数, pages: 包含了页码标签中要显示的动态页码, 一个能够被前端遍历的对象。
     '''
-
     def thePages(pageMax=1, pageshowed=1, thePage=1):
         if thePage < 1:
             thePage = 1
@@ -21,9 +20,11 @@ def paging(thePage=1, postMax=0, pageShow=2, pageCount=10):
             thePage = int(pageMax)
             pages = range(thePage - pageshowed, thePage + 1)
         else:
-            pages = range(thePage - (pageshowed / 2), thePage + (pageshowed / 2))
+            showed = (pageshowed / 2)
+            if type(showed) is float:
+                showed = (pageshowed // 2) + 1
+            pages = range(thePage - showed + 1, thePage + showed)
         return pages, thePage
-
 
     if postMax < pageCount:
         # print(postMax, '最大文章数')    # 测试用
