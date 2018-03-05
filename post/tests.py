@@ -7,6 +7,8 @@ from django.test import TestCase
 # Create your tests here.
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "GeekPy.settings")
 django.setup()
+
+# 如果非PyCharm运行脚本失败，请使用manage.py shell请复制这行注释以下的代码到shell中运行。以上的部分不需要复制。
 from post.models import Post
 
 
